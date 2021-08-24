@@ -1,0 +1,116 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SecuritySystem.Core.Models;
+using SecuritySystem.Core.Repositories;
+
+namespace SecuritySystem.EntityFrameworkCore.Repositories
+{
+    public abstract class RepositoryBase<TEntity, TPrimaryKey> : IRepositoryBase<TEntity, TPrimaryKey> where TEntity :  ModelBase<TPrimaryKey>
+    {
+        private DbContext _dbContextProvider;
+
+        public RepositoryBase(DbContext dbContextProvider)
+        {
+            _dbContextProvider = dbContextProvider;
+        } 
+
+        public virtual DbContext Context => _dbContextProvider;  
+        public virtual DbSet<TEntity> Table => Context.Set<TEntity>();
+     
+        public async Task DeleteAsync(TPrimaryKey id)
+        {
+            var entity =  Table.Local.FirstOrDefault(c=> EqualityComparer<TPrimaryKey>.Default.Equals(c.Id, id));
+            if(entity == null)
+            {
+                entity = await FirstOrDefaultAsync(id);
+                if(entity == null)
+                    return;
+            }
+
+            Delete(entity);
+        }
+        public void Delete(TEntity entity)
+        {
+            AttachIfNot(entity);
+            Table.Remove(entity);
+        }
+
+        public Task<IQueryable<TEntity>> GetAllAsync()
+        {
+            return Task.FromResult(Table.AsQueryable());
+        }
+
+        public async Task<TEntity> GetAsync(TPrimaryKey id)
+        {
+            return await FirstOrDefaultAsync(id);
+        }
+
+        public Task<TEntity> InsertAsync(TEntity entity)
+        {
+            return Task.FromResult(Table.Add(entity).Entity);
+        }
+
+        public Task<TEntity> InsertOrUpdateAsync(TEntity entity)
+        {
+            return entity.IsTransient() ? InsertAsync(entity) : UpdateAsync(entity);
+        }
+
+        public TEntity InsertOrUpdate(TEntity entity)
+        {
+            return entity.IsTransient() ? Insert(entity) : Update(entity);
+        }
+
+        public TEntity Insert(TEntity entity)
+        {
+            return Table.Add(entity).Entity;
+        }
+
+        public TEntity Update(TEntity entity)
+        {
+            AttachIfNot(entity);
+            Context.Entry(entity).State = EntityState.Modified;
+            return entity;
+        }
+
+        public Task<TEntity> UpdateAsync(TEntity entity)
+        {
+            AttachIfNot(entity);
+            Context.Entry(entity).State = EntityState.Modified;
+            return Task.FromResult(entity);
+        }
+
+        public async Task<TEntity> FirstOrDefaultAsync(TPrimaryKey id)
+        {
+            var query = await GetAllAsync();
+            return query.FirstOrDefault<TEntity>(CreateEqualityExpressionForId(id));
+        }
+
+        protected static Expression<Func<TEntity, bool>> CreateEqualityExpressionForId(TPrimaryKey id)
+        {
+            ParameterExpression lambdaParam = Expression.Parameter(typeof(TEntity));
+
+            var value = Convert.ChangeType(id, typeof(TPrimaryKey));
+            var valueExpression = Expression.Constant(value, typeof(TPrimaryKey));
+
+            BinaryExpression lambdaBody = Expression.Equal(
+                Expression.PropertyOrField(lambdaParam, "Id"),
+                valueExpression
+            );
+
+            return Expression.Lambda<Func<TEntity, bool>>(lambdaBody, lambdaParam);
+        }
+
+        protected virtual void AttachIfNot(TEntity entity)
+        {
+            if(!Table.Local.Contains(entity))
+            {
+                Table.Attach(entity);
+            }
+        }
+    }
+}
