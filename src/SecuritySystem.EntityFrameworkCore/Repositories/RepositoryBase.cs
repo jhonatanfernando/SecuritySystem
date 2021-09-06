@@ -10,11 +10,11 @@ using SecuritySystem.Core.Repositories;
 
 namespace SecuritySystem.EntityFrameworkCore.Repositories
 {
-    public abstract class RepositoryBase<TEntity, TPrimaryKey> : IRepositoryBase<TEntity, TPrimaryKey> where TEntity :  ModelBase<TPrimaryKey>
+    public class RepositoryBase<TEntity, TPrimaryKey> : IRepositoryBase<TEntity, TPrimaryKey> where TEntity :  ModelBase<TPrimaryKey>
     {
-        private DbContext _dbContextProvider;
+        private SecuritySystemDbContext _dbContextProvider;
 
-        public RepositoryBase(DbContext dbContextProvider)
+        public RepositoryBase(SecuritySystemDbContext dbContextProvider)
         {
             _dbContextProvider = dbContextProvider;
         } 

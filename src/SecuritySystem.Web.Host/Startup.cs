@@ -5,6 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SecuritySystem.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using SecuritySystem.Core.Repositories;
+using SecuritySystem.EntityFrameworkCore.Repositories;
+using SecuritySystem.Core.Models;
+using System;
+using SecuritySystem.Application.Services;
+using SecuritySystem.Application.Door.Dto;
 
 namespace SecuritySystem.Web.Host
 {
@@ -23,7 +30,14 @@ namespace SecuritySystem.Web.Host
             services.AddControllers();
 
             services.AddDbContext<SecuritySystemDbContext>(
-                         options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+                         options => options.UseSqlServer("name=ConnectionStrings:Default"));
+
+            services.AddScoped<IRepositoryBase<Door, Guid>, RepositoryBase<Door, Guid>>();
+            services.AddScoped<IAppService<DoorDto, Guid>, SecuritySystem.Application.Services.Door.DoorAppService>();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +47,13 @@ namespace SecuritySystem.Web.Host
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseHttpsRedirection();  
 

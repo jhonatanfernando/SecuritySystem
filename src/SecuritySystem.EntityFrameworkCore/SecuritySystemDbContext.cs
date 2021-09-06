@@ -1,4 +1,6 @@
+using System.IO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SecuritySystem.Core.Models;
 
 namespace SecuritySystem.EntityFrameworkCore
@@ -11,6 +13,19 @@ namespace SecuritySystem.EntityFrameworkCore
         {
 
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+        if (!optionsBuilder.IsConfigured)
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json")
+               .Build();
+            var connectionString = configuration.GetConnectionString("Default");
+            optionsBuilder.UseSqlServer(connectionString);
+        }
+     }
 
         public DbSet<ControlAccess> ControlAccesses { get; set; }
         public DbSet<Door> Doors { get; set; }
