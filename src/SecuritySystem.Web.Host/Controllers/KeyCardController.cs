@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using SecuritySystem.Application.Door.Dto;
+using SecuritySystem.Application.KeyCard.Dto;
 using SecuritySystem.Application.Services;
 using SecuritySystem.Core.Models;
 using SecuritySystem.Core.Repositories;
@@ -11,10 +11,10 @@ namespace SecuritySystem.Web.Host.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DoorController :  ControllerBase
+    public class KeyCardController :  ControllerBase
     {
-        IAppService<DoorDto, DoorInsertDto, Guid> _service;
-        public DoorController(IAppService<DoorDto, DoorInsertDto, Guid> service)
+        IAppService<KeyCardDto, KeyCardInsertDto, Guid> _service;
+        public KeyCardController(IAppService<KeyCardDto, KeyCardInsertDto, Guid> service)
         {
             _service = service;
         }
@@ -23,8 +23,8 @@ namespace SecuritySystem.Web.Host.Controllers
         [Route("All")]
         public async Task<IActionResult> GetAll()
         {
-           var doors = await _service.GetAllAsync();
-           return Ok(doors);
+           var keycards = await _service.GetAllAsync();
+           return Ok(keycards);
         }
 
         [HttpGet]
@@ -34,32 +34,32 @@ namespace SecuritySystem.Web.Host.Controllers
            if(id == Guid.Empty)
               return BadRequest();
 
-           var door = await _service.GetAsync(id);
-           return Ok(door);
+           var keycard = await _service.GetAsync(id);
+           return Ok(keycard);
         }
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create(DoorInsertDto entity)
+        public async Task<IActionResult> Create(KeyCardInsertDto entity)
         {
              if(entity == null)
                 return BadRequest();
 
-             var door = await _service.InsertAsync(entity); 
+             var keycard = await _service.InsertAsync(entity); 
 
-             return Ok(door);
+             return Ok(keycard);
         }
 
         [HttpPut]
         [Route("Update")]
-        public async Task<IActionResult> Update(DoorInsertDto entity)
+        public async Task<IActionResult> Update(KeyCardInsertDto entity)
         {
              if(entity == null)
                 return BadRequest();
 
-             var door = await _service.UpdateAsync(entity); 
+             var keycard = await _service.UpdateAsync(entity); 
 
-             return Ok(door);
+             return Ok(keycard);
         }
 
         [HttpDelete]

@@ -9,6 +9,8 @@ namespace SecuritySystem.Application.Door.Dto
         public DoorMapProfile()
         {
             CreateMap<DoorDto, Models.Door>();
+
+            CreateMap<DoorInsertDto, Models.Door>();
             
             CreateMap<Models.Door, DoorDto>();
         }

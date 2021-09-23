@@ -12,6 +12,9 @@ using SecuritySystem.Core.Models;
 using System;
 using SecuritySystem.Application.Services;
 using SecuritySystem.Application.Door.Dto;
+using SecuritySystem.Application.KeyCard.Dto;
+using SecuritySystem.Application.MotionSensor.Dto;
+using SecuritySystem.Application.Services.ControlAccess;
 
 namespace SecuritySystem.Web.Host
 {
@@ -33,7 +36,14 @@ namespace SecuritySystem.Web.Host
                          options => options.UseSqlServer("name=ConnectionStrings:Default"));
 
             services.AddScoped<IRepositoryBase<Door, Guid>, RepositoryBase<Door, Guid>>();
+            services.AddScoped<IRepositoryBase<KeyCard, Guid>, RepositoryBase<KeyCard, Guid>>();
+            services.AddScoped<IRepositoryBase<MotionSensor, Guid>, RepositoryBase<MotionSensor, Guid>>();
+            services.AddScoped<IRepositoryBase<ControlAccess, long>, RepositoryBase<ControlAccess, long>>();
+
             services.AddScoped<IAppService<DoorDto, DoorInsertDto, Guid>, SecuritySystem.Application.Services.Door.DoorAppService>();
+            services.AddScoped<IAppService<KeyCardDto, KeyCardInsertDto, Guid>, SecuritySystem.Application.Services.KeyCard.KeyCardAppService>();
+            services.AddScoped<IAppService<MotionSensorDto, MotionSensorInsertDto, Guid>, SecuritySystem.Application.Services.MotionSensor.MotionSensorAppService>();
+            services.AddScoped<IControlAccessAppService, SecuritySystem.Application.Services.ControlAccess.ControlAccessAppService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
