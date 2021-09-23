@@ -33,7 +33,7 @@ namespace SecuritySystem.Web.Host
                          options => options.UseSqlServer("name=ConnectionStrings:Default"));
 
             services.AddScoped<IRepositoryBase<Door, Guid>, RepositoryBase<Door, Guid>>();
-            services.AddScoped<IAppService<DoorDto, Guid>, SecuritySystem.Application.Services.Door.DoorAppService>();
+            services.AddScoped<IAppService<DoorDto, DoorInsertDto, Guid>, SecuritySystem.Application.Services.Door.DoorAppService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

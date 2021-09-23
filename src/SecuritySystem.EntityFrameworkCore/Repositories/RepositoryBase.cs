@@ -38,6 +38,7 @@ namespace SecuritySystem.EntityFrameworkCore.Repositories
         {
             AttachIfNot(entity);
             Table.Remove(entity);
+            _dbContextProvider.SaveChanges();
         }
 
         public Task<IQueryable<TEntity>> GetAllAsync()
@@ -52,7 +53,10 @@ namespace SecuritySystem.EntityFrameworkCore.Repositories
 
         public Task<TEntity> InsertAsync(TEntity entity)
         {
-            return Task.FromResult(Table.Add(entity).Entity);
+            var entitySaved = Task.FromResult(Table.Add(entity).Entity);
+            _dbContextProvider.SaveChanges();
+            return entitySaved;
+             
         }
 
         public Task<TEntity> InsertOrUpdateAsync(TEntity entity)
@@ -67,13 +71,16 @@ namespace SecuritySystem.EntityFrameworkCore.Repositories
 
         public TEntity Insert(TEntity entity)
         {
-            return Table.Add(entity).Entity;
+            var entitySaved =  Table.Add(entity).Entity;
+            _dbContextProvider.SaveChanges();
+            return entitySaved;
         }
 
         public TEntity Update(TEntity entity)
         {
             AttachIfNot(entity);
             Context.Entry(entity).State = EntityState.Modified;
+            _dbContextProvider.SaveChanges();
             return entity;
         }
 
@@ -81,6 +88,7 @@ namespace SecuritySystem.EntityFrameworkCore.Repositories
         {
             AttachIfNot(entity);
             Context.Entry(entity).State = EntityState.Modified;
+            _dbContextProvider.SaveChanges();
             return Task.FromResult(entity);
         }
 

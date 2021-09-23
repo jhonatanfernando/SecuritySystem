@@ -5,18 +5,20 @@ using SecuritySystem.Core.Models;
 
 namespace SecuritySystem.Application.Services
 {
-    public interface IAppService<TEntity, TPrimaryKey> where TEntity :  EntityDto<TPrimaryKey>
+    public interface IAppService<TEntity, TInsertEntityDto, TPrimaryKey> 
+       where TEntity :  EntityDto<TPrimaryKey>
+       where TInsertEntityDto :  EntityDto<TPrimaryKey>
     {
         Task<IQueryable<TEntity>> GetAllAsync(); 
         Task<TEntity> GetAsync(TPrimaryKey id);
-        Task<TEntity> InsertOrUpdateAsync(TEntity entity);
+        Task<TEntity> InsertOrUpdateAsync(TInsertEntityDto entity);
         Task DeleteAsync(TPrimaryKey id);
-        void Delete(TEntity entity);
-        Task<TEntity> UpdateAsync(TEntity entity);
-        TEntity Update(TEntity entity);
-        Task<TEntity> InsertAsync(TEntity entity);
-        TEntity InsertOrUpdate(TEntity entity);
-        TEntity Insert(TEntity entity);
+        void Delete(TInsertEntityDto entity);
+        Task<TEntity> UpdateAsync(TInsertEntityDto entity);
+        TEntity Update(TInsertEntityDto entity);
+        Task<TEntity> InsertAsync(TInsertEntityDto entity);
+        TEntity InsertOrUpdate(TInsertEntityDto entity);
+        TEntity Insert(TInsertEntityDto entity);
         Task<TEntity> FirstOrDefaultAsync(TPrimaryKey id);
     }
 }

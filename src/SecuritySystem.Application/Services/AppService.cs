@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AutoMapper;
 using SecuritySystem.Application.Services.Dto;
@@ -8,9 +10,10 @@ using SecuritySystem.Core.Repositories;
 
 namespace SecuritySystem.Application.Services
 {
-    public class AppService<TEntity, TEntityDto, TPrimaryKey> : IAppService<TEntityDto, TPrimaryKey> 
+    public class AppService<TEntity, TEntityDto, TInsertEntityDto, TPrimaryKey> : IAppService<TEntityDto, TInsertEntityDto, TPrimaryKey> 
         where TEntity : ModelBase<TPrimaryKey>
         where TEntityDto : EntityDto<TPrimaryKey>
+        where TInsertEntityDto : EntityDto<TPrimaryKey>
     {
         IRepositoryBase<TEntity, TPrimaryKey> _repository;
         IMapper _mapper;
@@ -20,19 +23,20 @@ namespace SecuritySystem.Application.Services
            _mapper = mapper;
         }
 
-        public void Delete(TEntityDto entity)
+        public void Delete(TInsertEntityDto entity)
         {
-            throw new System.NotImplementedException();
+             var entityDb = _mapper.Map<TEntity>(entity); 
+             _repository.Delete(entityDb);
         }
 
-        public Task DeleteAsync(TPrimaryKey id)
+        public async Task DeleteAsync(TPrimaryKey id)
         {
-            throw new System.NotImplementedException();
+            await _repository.DeleteAsync(id);
         }
 
-        public Task<TEntityDto> FirstOrDefaultAsync(TPrimaryKey id)
+        public async Task<TEntityDto> FirstOrDefaultAsync(TPrimaryKey id)
         {
-            throw new System.NotImplementedException();
+            return await GetAsync(id);
         }
 
         public async Task<IQueryable<TEntityDto>> GetAllAsync()
@@ -42,39 +46,59 @@ namespace SecuritySystem.Application.Services
             return result.AsQueryable<TEntityDto>();
         }
 
-        public Task<TEntityDto> GetAsync(TPrimaryKey id)
+        public async Task<TEntityDto> GetAsync(TPrimaryKey id)
         {
-            throw new System.NotImplementedException();
+            var entity = await _repository.GetAsync(id);
+            var result = _mapper.Map<TEntityDto>(entity);
+            return result;
         }
 
-        public TEntityDto Insert(TEntityDto entity)
+        public TEntityDto Insert(TInsertEntityDto entity)
         {
-            throw new System.NotImplementedException();
+           var entityDb = _mapper.Map<TEntity>(entity); 
+           var entityInserted =  _repository.Insert(entityDb);
+           var result = _mapper.Map<TEntityDto>(entityInserted);
+           return result;
         }
 
-        public Task<TEntityDto> InsertAsync(TEntityDto entity)
+        public async Task<TEntityDto> InsertAsync(TInsertEntityDto entity)
         {
-            throw new System.NotImplementedException();
+            var entityDb = _mapper.Map<TEntity>(entity); 
+           var entityInserted = await _repository.InsertAsync(entityDb);
+           var result = _mapper.Map<TEntityDto>(entityInserted);
+           return result;
         }
 
-        public TEntityDto InsertOrUpdate(TEntityDto entity)
+        public TEntityDto InsertOrUpdate(TInsertEntityDto entity)
         {
-            throw new System.NotImplementedException();
+          var entityDb = _mapper.Map<TEntity>(entity); 
+           var entityInserted =  _repository.InsertOrUpdate(entityDb);
+           var result = _mapper.Map<TEntityDto>(entityInserted);
+           return result;
         }
 
-        public Task<TEntityDto> InsertOrUpdateAsync(TEntityDto entity)
+        public async Task<TEntityDto> InsertOrUpdateAsync(TInsertEntityDto entity)
         {
-            throw new System.NotImplementedException();
+            var entityDb = _mapper.Map<TEntity>(entity); 
+           var entityInserted = await _repository.InsertOrUpdateAsync(entityDb);
+           var result = _mapper.Map<TEntityDto>(entityInserted);
+           return result;
         }
 
-        public TEntityDto Update(TEntityDto entity)
+        public TEntityDto Update(TInsertEntityDto entity)
         {
-            throw new System.NotImplementedException();
+          var entityDb = _mapper.Map<TEntity>(entity); 
+           var entityInserted =  _repository.Update(entityDb);
+           var result = _mapper.Map<TEntityDto>(entityInserted);
+           return result;
         }
 
-        public Task<TEntityDto> UpdateAsync(TEntityDto entity)
+        public async Task<TEntityDto> UpdateAsync(TInsertEntityDto entity)
         {
-            throw new System.NotImplementedException();
+          var entityDb = _mapper.Map<TEntity>(entity); 
+           var entityInserted = await _repository.UpdateAsync(entityDb);
+           var result = _mapper.Map<TEntityDto>(entityInserted);
+           return result;
         }
     }
 }
