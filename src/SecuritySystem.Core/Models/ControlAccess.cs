@@ -10,13 +10,13 @@ namespace SecuritySystem.Core.Models
         [ForeignKey("Door")]
         public Guid DoorId { get; set; }
 
-        public Door Door { get; set; }
+        public virtual Door Door { get; set; }
         
         [Required]
         [ForeignKey("KeyCard")]
         public Guid KeyCardId {get; set;}
 
-        public KeyCard KeyCard { get; set; }
+        public virtual KeyCard KeyCard { get; set; }
 
         [Required]
         public bool HasAccess { get; set; }

@@ -8,6 +8,6 @@ namespace SecuritySystem.Application.Services.ControlAccess
     {
         Task<ControlAccessDto> GiveAccess(ControlAccessInsertDto entity);
 
-        Task<ControlAccessDto> RemoveAccess(Guid doorId, Guid KeyCardId);
+        Task<ControlAccessDto> RemoveAccess(ControlAccessInsertDto entity);
     }
 }

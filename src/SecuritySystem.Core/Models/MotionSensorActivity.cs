@@ -10,7 +10,7 @@ namespace SecuritySystem.Core.Models
         [ForeignKey("MotionSensor")]
         public Guid MotionSensorId { get; set; }
 
-        public MotionSensor MotionSensor { get; set; }
+        public virtual MotionSensor MotionSensor { get; set; }
 
         [Required]
         public bool IsAlarmTriggered { get; set; }

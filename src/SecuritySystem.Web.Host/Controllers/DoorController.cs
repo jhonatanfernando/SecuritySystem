@@ -28,7 +28,7 @@ namespace SecuritySystem.Web.Host.Controllers
         }
 
         [HttpGet]
-        [Route("Id")]
+        [Route("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
            if(id == Guid.Empty)

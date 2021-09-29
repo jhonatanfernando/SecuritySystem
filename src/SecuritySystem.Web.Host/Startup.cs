@@ -15,6 +15,7 @@ using SecuritySystem.Application.Door.Dto;
 using SecuritySystem.Application.KeyCard.Dto;
 using SecuritySystem.Application.MotionSensor.Dto;
 using SecuritySystem.Application.Services.ControlAccess;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace SecuritySystem.Web.Host
 {
@@ -33,12 +34,14 @@ namespace SecuritySystem.Web.Host
             services.AddControllers();
 
             services.AddDbContext<SecuritySystemDbContext>(
-                         options => options.UseSqlServer("name=ConnectionStrings:Default"));
+                         options => options.UseSqlServer("name=ConnectionStrings:Default").UseLazyLoadingProxies()
+                                           .ConfigureWarnings(w=> w.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning)));
 
             services.AddScoped<IRepositoryBase<Door, Guid>, RepositoryBase<Door, Guid>>();
             services.AddScoped<IRepositoryBase<KeyCard, Guid>, RepositoryBase<KeyCard, Guid>>();
             services.AddScoped<IRepositoryBase<MotionSensor, Guid>, RepositoryBase<MotionSensor, Guid>>();
             services.AddScoped<IRepositoryBase<ControlAccess, long>, RepositoryBase<ControlAccess, long>>();
+            services.AddScoped<IRepositoryBase<DoorLogActivity, long>, RepositoryBase<DoorLogActivity, long>>();
 
             services.AddScoped<IAppService<DoorDto, DoorInsertDto, Guid>, SecuritySystem.Application.Services.Door.DoorAppService>();
             services.AddScoped<IAppService<KeyCardDto, KeyCardInsertDto, Guid>, SecuritySystem.Application.Services.KeyCard.KeyCardAppService>();

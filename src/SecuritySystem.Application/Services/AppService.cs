@@ -10,6 +10,17 @@ using SecuritySystem.Core.Repositories;
 
 namespace SecuritySystem.Application.Services
 {
+
+    public class AppService<TEntity, TEntityDto, TPrimaryKey> : AppService<TEntity, TEntityDto, TEntityDto, TPrimaryKey>
+        where TEntity : ModelBase<TPrimaryKey>
+        where TEntityDto : EntityDto<TPrimaryKey>
+    {
+        public AppService(IMapper mapper, IRepositoryBase<TEntity, TPrimaryKey> repository) : base(mapper, repository)
+        {
+
+        }
+    }
+
     public class AppService<TEntity, TEntityDto, TInsertEntityDto, TPrimaryKey> : IAppService<TEntityDto, TInsertEntityDto, TPrimaryKey> 
         where TEntity : ModelBase<TPrimaryKey>
         where TEntityDto : EntityDto<TPrimaryKey>
@@ -97,7 +108,8 @@ namespace SecuritySystem.Application.Services
 
         public async Task<TEntityDto> UpdateAsync(TInsertEntityDto entity)
         {
-          var entityDb = _mapper.Map<TEntity>(entity); 
+          var entityDb = await _repository.GetAsync(entity.Id);
+           entityDb = _mapper.Map(entity,entityDb); 
            var entityInserted = await _repository.UpdateAsync(entityDb);
            var result = _mapper.Map<TEntityDto>(entityInserted);
            return result;

@@ -2,6 +2,8 @@ using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SecuritySystem.Core.Models;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+ 
 
 namespace SecuritySystem.EntityFrameworkCore
 {
@@ -23,8 +25,11 @@ namespace SecuritySystem.EntityFrameworkCore
                .AddJsonFile("appsettings.json")
                .Build();
             var connectionString = configuration.GetConnectionString("Default");
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(connectionString).UseLazyLoadingProxies();
+            optionsBuilder.ConfigureWarnings(w=> w.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning));
         }
+
+        
      }
 
         public DbSet<ControlAccess> ControlAccesses { get; set; }

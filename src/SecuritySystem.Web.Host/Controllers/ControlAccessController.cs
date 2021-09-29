@@ -19,7 +19,7 @@ namespace SecuritySystem.Web.Host.Controllers
 
         [HttpPut]
         [Route("GiveAccess")]
-        public async Task<IActionResult> Update(ControlAccessInsertDto entity)
+        public async Task<IActionResult> GiveAccess(ControlAccessInsertDto entity)
         {
              if(entity == null)
                 return BadRequest();
@@ -27,6 +27,26 @@ namespace SecuritySystem.Web.Host.Controllers
              var controlAccess = await _service.GiveAccess(entity); 
 
              return Ok(controlAccess);
+        }
+
+        [HttpPut]
+        [Route("RemoveAccess")]
+        public async Task<IActionResult> RemoveAccess(ControlAccessInsertDto entity)
+        {
+             if(entity == null)
+                return BadRequest();
+
+             var controlAccess = await _service.RemoveAccess(entity); 
+
+             return Ok(controlAccess);
+        }
+
+        [HttpGet]
+        [Route("All")]
+        public async Task<IActionResult> GetAll()
+        {
+           var doors = await _service.GetAllAsync();
+           return Ok(doors);
         }
     }
 }
