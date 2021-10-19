@@ -16,6 +16,8 @@ using SecuritySystem.Application.KeyCard.Dto;
 using SecuritySystem.Application.MotionSensor.Dto;
 using SecuritySystem.Application.Services.ControlAccess;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using SecuritySystem.Application.Services.Door;
+using SecuritySystem.Application.Services.KeyCard;
 
 namespace SecuritySystem.Web.Host
 {
@@ -43,8 +45,8 @@ namespace SecuritySystem.Web.Host
             services.AddScoped<IRepositoryBase<ControlAccess, long>, RepositoryBase<ControlAccess, long>>();
             services.AddScoped<IRepositoryBase<DoorLogActivity, long>, RepositoryBase<DoorLogActivity, long>>();
 
-            services.AddScoped<IAppService<DoorDto, DoorInsertDto, Guid>, SecuritySystem.Application.Services.Door.DoorAppService>();
-            services.AddScoped<IAppService<KeyCardDto, KeyCardInsertDto, Guid>, SecuritySystem.Application.Services.KeyCard.KeyCardAppService>();
+            services.AddScoped<IDoorAppService, SecuritySystem.Application.Services.Door.DoorAppService>();
+            services.AddScoped<IKeyCardAppService, SecuritySystem.Application.Services.KeyCard.KeyCardAppService>();
             services.AddScoped<IAppService<MotionSensorDto, MotionSensorInsertDto, Guid>, SecuritySystem.Application.Services.MotionSensor.MotionSensorAppService>();
             services.AddScoped<IControlAccessAppService, SecuritySystem.Application.Services.ControlAccess.ControlAccessAppService>();
 

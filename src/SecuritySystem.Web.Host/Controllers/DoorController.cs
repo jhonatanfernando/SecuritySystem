@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using SecuritySystem.Application.Door.Dto;
 using SecuritySystem.Application.Services;
+using SecuritySystem.Application.Services.Door;
 using SecuritySystem.Core.Models;
 using SecuritySystem.Core.Repositories;
 
@@ -13,8 +14,8 @@ namespace SecuritySystem.Web.Host.Controllers
     [ApiController]
     public class DoorController :  ControllerBase
     {
-        IAppService<DoorDto, DoorInsertDto, Guid> _service;
-        public DoorController(IAppService<DoorDto, DoorInsertDto, Guid> service)
+        IDoorAppService _service;
+        public DoorController(IDoorAppService service)
         {
             _service = service;
         }
@@ -72,6 +73,30 @@ namespace SecuritySystem.Web.Host.Controllers
              await _service.DeleteAsync(guid); 
 
              return Ok();
+        }
+
+        [HttpPut]
+        [Route("Open")]
+        public async Task<IActionResult> Open(OpenDoorDto openDoorDto)
+        {
+             if(openDoorDto == null || openDoorDto.DoorId == Guid.Empty || openDoorDto.KeyCardId == Guid.Empty)
+                return BadRequest();
+
+             var result = await _service.OpenDoor(openDoorDto.DoorId, openDoorDto.KeyCardId); 
+
+             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("AllKeyCards")]
+        public async Task<IActionResult> GetAllKeyCards(Guid doorId)
+        {
+             if(doorId == Guid.Empty)
+                return BadRequest();
+
+             var result = await _service.GetAllKeyCards(doorId); 
+
+             return Ok(result);
         }
     
     }

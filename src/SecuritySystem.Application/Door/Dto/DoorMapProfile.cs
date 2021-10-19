@@ -10,6 +10,8 @@ namespace SecuritySystem.Application.Door.Dto
         {
             CreateMap<DoorDto, Models.Door>();
 
+             CreateMap<DoorDto, DoorInsertDto>();
+
             CreateMap<DoorInsertDto, Models.Door>();
             
             CreateMap<Models.Door, DoorDto>();

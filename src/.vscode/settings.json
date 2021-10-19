@@ -1,3 +1,5 @@
 {
-    "omnisharp.disableMSBuildDiagnosticWarning": true
+    "omnisharp.disableMSBuildDiagnosticWarning": true,
+    "javascript.format.placeOpenBraceOnNewLineForControlBlocks": true,
+    "editor.formatOnSave": true
 }

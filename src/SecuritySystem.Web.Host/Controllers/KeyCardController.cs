@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using SecuritySystem.Application.KeyCard.Dto;
 using SecuritySystem.Application.Services;
+using SecuritySystem.Application.Services.KeyCard;
 using SecuritySystem.Core.Models;
 using SecuritySystem.Core.Repositories;
 
@@ -13,8 +14,8 @@ namespace SecuritySystem.Web.Host.Controllers
     [ApiController]
     public class KeyCardController :  ControllerBase
     {
-        IAppService<KeyCardDto, KeyCardInsertDto, Guid> _service;
-        public KeyCardController(IAppService<KeyCardDto, KeyCardInsertDto, Guid> service)
+        IKeyCardAppService _service;
+        public KeyCardController(IKeyCardAppService service)
         {
             _service = service;
         }
@@ -72,6 +73,18 @@ namespace SecuritySystem.Web.Host.Controllers
              await _service.DeleteAsync(guid); 
 
              return Ok();
+        }
+
+        [HttpGet]
+        [Route("AllDoors")]
+        public async Task<IActionResult> GetAllDoors(Guid keyCardId)
+        {
+             if(keyCardId == Guid.Empty)
+                return BadRequest();
+
+             var result = await _service.GetAllDoors(keyCardId); 
+
+             return Ok(result);
         }
     
     }

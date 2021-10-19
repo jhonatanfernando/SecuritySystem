@@ -8,5 +8,9 @@ namespace SecuritySystem.Application.Door.Dto
     {
         [Required]
         public string Name { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public bool IsOpen { get; set; }
     }
 }

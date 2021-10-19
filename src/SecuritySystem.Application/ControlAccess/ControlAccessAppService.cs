@@ -10,11 +10,11 @@ namespace SecuritySystem.Application.Services.ControlAccess
 {
     public class ControlAccessAppService :  AppService<SecuritySystem.Core.Models.ControlAccess, ControlAccessDto, ControlAccessInsertDto, long>, IControlAccessAppService
     {
-        IRepositoryBase<SecuritySystem.Core.Models.DoorLogActivity, long> repositoryDoorLog;
+       
         public ControlAccessAppService(IMapper mapper, IRepositoryBase<SecuritySystem.Core.Models.ControlAccess, long> repository,
         IRepositoryBase<SecuritySystem.Core.Models.DoorLogActivity, long> repositoryDoorLog) : base(mapper, repository)
         {
-            this.repositoryDoorLog = repositoryDoorLog;
+            
         }
 
         public async Task<ControlAccessDto> GiveAccess(ControlAccessInsertDto entity)
@@ -25,20 +25,13 @@ namespace SecuritySystem.Application.Services.ControlAccess
             {
                 var insertDto = new ControlAccessInsertDto()
                 { 
+                   Id = access == null ? 0 : access.Id,  
                     DoorId = entity.DoorId,
                     KeyCardId = entity.KeyCardId,
                     HasAccess = true
                 };
 
-                access = await InsertAsync(insertDto);
-
-                await repositoryDoorLog.InsertAsync(new Core.Models.DoorLogActivity()
-                {
-                    DoorName = access.Door.Name,
-                    keyCardName = access.KeyCard.Name,
-                    IsGranted = true,
-                    DateTimeEvent = DateTimeOffset.UtcNow
-                });
+                access = InsertOrUpdate(insertDto);
             }
            
             return access;
@@ -60,16 +53,7 @@ namespace SecuritySystem.Application.Services.ControlAccess
                 };
 
                 access = await UpdateAsync(updateDto);
-
-                await repositoryDoorLog.InsertAsync(new Core.Models.DoorLogActivity()
-                {
-                    DoorName = access.Door.Name,
-                    keyCardName = access.KeyCard.Name,
-                    IsGranted = false,
-                    DateTimeEvent = DateTimeOffset.UtcNow
-                });
             }
-           
             return access;
         }
     }

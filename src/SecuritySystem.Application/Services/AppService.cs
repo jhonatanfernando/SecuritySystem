@@ -30,6 +30,8 @@ namespace SecuritySystem.Application.Services
         IMapper _mapper;
 
         public IRepositoryBase<TEntity, TPrimaryKey> Repository => _repository;
+        public IMapper Mapper => _mapper;
+
         public AppService(IMapper mapper, IRepositoryBase<TEntity, TPrimaryKey> repository)
         {
            _repository = repository;
