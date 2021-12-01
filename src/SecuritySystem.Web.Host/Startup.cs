@@ -37,7 +37,7 @@ namespace SecuritySystem.Web.Host
 
             services.AddDbContext<SecuritySystemDbContext>(
                          options => options.UseSqlServer("name=ConnectionStrings:Default").UseLazyLoadingProxies()
-                                           .ConfigureWarnings(w=> w.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning)));
+                                           .ConfigureWarnings(w => w.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning)));
 
             services.AddScoped<IRepositoryBase<Door, Guid>, RepositoryBase<Door, Guid>>();
             services.AddScoped<IRepositoryBase<KeyCard, Guid>, RepositoryBase<KeyCard, Guid>>();
@@ -56,21 +56,23 @@ namespace SecuritySystem.Web.Host
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SecuritySystemDbContext dbContext)
         {
+            dbContext.Database.Migrate();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseSwagger();
-            
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            app.UseHttpsRedirection();  
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
